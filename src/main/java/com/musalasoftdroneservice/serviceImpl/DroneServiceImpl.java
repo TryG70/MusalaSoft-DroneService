@@ -5,9 +5,7 @@ import com.musalasoftdroneservice.dto.LoadedDroneDetails;
 import com.musalasoftdroneservice.entity.Drone;
 import com.musalasoftdroneservice.entity.Medication;
 import com.musalasoftdroneservice.enums.DroneState;
-import com.musalasoftdroneservice.exception.DroneAlreadyRegisteredException;
-import com.musalasoftdroneservice.exception.DroneNotFoundException;
-import com.musalasoftdroneservice.exception.DroneOverloadedException;
+import com.musalasoftdroneservice.exception.*;
 import com.musalasoftdroneservice.reponse.APIResponse;
 import com.musalasoftdroneservice.repository.DroneRepository;
 import com.musalasoftdroneservice.repository.MedicationRepository;
@@ -16,6 +14,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -57,42 +56,65 @@ public class DroneServiceImpl implements DroneService {
 
     @Override
     @Transactional
-    public APIResponse<LoadedDroneDetails> loadDrone(DroneDto droneDto) {
+    public APIResponse<LoadedDroneDetails> loadDrone(String serialNumber, String code) {
 
-        Drone drone = droneRepository.findBySerialNumber(droneDto.getSerialNumber()).orElseThrow(() ->
-                new DroneNotFoundException("Drone with serialNumber: " + droneDto.getSerialNumber() + "not found in database"));
+        Drone drone = findDroneBySerialNumber(serialNumber);
 
-        double totalWeight = 0.0;
+        if(drone.getBatteryCapacity().compareTo(new BigDecimal("0.25")) > 0) {
+            Medication medication = findMedicationByCode(code);
 
-        for(Medication medication : droneDto.getMedications()) {
-            totalWeight += medication.getWeight();
-        }
+            drone.getMedications().add(medication);
 
-        drone.setDroneState(DroneState.LOADING);
-        droneRepository.save(drone);
-        if(totalWeight < drone.getWeightLimit()) {
+            double totalWeight = 0.0;
 
-            drone.setDroneState(DroneState.LOADED);
-            List<Medication> medicationList = medicationRepository.saveAll(droneDto.getMedications());
+            for(Medication med : drone.getMedications()) {
+                totalWeight += med.getWeight();
+            }
 
-            drone.setMedications(medicationList);
+            drone.setDroneState(DroneState.LOADING);
             droneRepository.save(drone);
+            if(totalWeight < drone.getWeightLimit()) {
 
-            LoadedDroneDetails loadedDroneDetails = LoadedDroneDetails.builder()
-                    .serialNumber(droneDto.getSerialNumber())
-                    .medicationList(droneDto.getMedications())
-                    .build();
+                drone.setDroneState(DroneState.LOADED);
 
-            return new APIResponse<>("drone loaded successfully", LocalDateTime.now(), loadedDroneDetails);
+                droneRepository.save(drone);
 
-        } else {
+                LoadedDroneDetails loadedDroneDetails = LoadedDroneDetails.builder()
+                        .serialNumber(drone.getSerialNumber())
+                        .medicationList(drone.getMedications())
+                        .build();
 
-            drone.setDroneState(DroneState.IDLE);
-            droneRepository.save(drone);
+                return new APIResponse<>("drone loaded successfully", LocalDateTime.now(), loadedDroneDetails);
 
-            throw new DroneOverloadedException("The medications total weight, outweighs Drone with serialNumber: "
-                    + droneDto.getSerialNumber() + " capacity of " + drone.getWeightLimit() + "gr");
+            } else {
+
+                drone.setDroneState(DroneState.IDLE);
+                droneRepository.save(drone);
+
+                throw new DroneOverloadedException("The medications total weight, outweighs Drone with serialNumber: "
+                        + drone.getSerialNumber() + " capacity of " + drone.getWeightLimit() + "gr");
+            }
+        } else  {
+                throw  new DroneLowBatteryException("Drone Battery is Low");
         }
+    }
+
+    @Override
+    public APIResponse<List<Medication>> getDroneMedicationItems(String serialNumber, LocalDateTime date) {
+
+        Drone drone = findDroneBySerialNumber(serialNumber);
+
+        return new APIResponse<>("medication items found", LocalDateTime.now(), medicationRepository.findAllByDrone_IdAndUpdatedAt(drone.getId(), date));
+    }
+
+    public Drone findDroneBySerialNumber(String serialNumber) {
+        return droneRepository.findBySerialNumber(serialNumber).orElseThrow(() ->
+                new DroneNotFoundException("Drone with serialNumber: " + serialNumber + "not found in database"));
+    }
+
+    public Medication findMedicationByCode(String code) {
+        return medicationRepository.findByCode(code).orElseThrow(() ->
+                new MedicationNotFoundException("Medication with code: " + code + "not found in database"));
     }
 
 

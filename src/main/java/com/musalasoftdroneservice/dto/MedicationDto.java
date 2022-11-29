@@ -1,24 +1,14 @@
-package com.musalasoftdroneservice.entity;
+package com.musalasoftdroneservice.dto;
 
+import lombok.Builder;
+import lombok.Data;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.*;
-
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Entity
-@Table(name = "medications")
-public class Medication extends EntityBaseClass{
+@Data
+public class MedicationDto {
 
     @Pattern(regexp = "(^[a-zA-Z0-9-_])$", message = "letters, numbers, hyphen and underscore allowed")
     @NotNull(message = "Name of medication is required")
@@ -32,9 +22,4 @@ public class Medication extends EntityBaseClass{
     private String code;
 
     private String image;
-
-    @JsonBackReference
-    @ManyToOne
-    @JoinColumn(name = "drone", referencedColumnName = "id")
-    private Drone drone;
 }
