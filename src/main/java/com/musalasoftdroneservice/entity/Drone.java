@@ -1,5 +1,6 @@
 package com.musalasoftdroneservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.musalasoftdroneservice.enums.DroneModel;
 import com.musalasoftdroneservice.enums.DroneState;
 
@@ -9,6 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -43,6 +45,7 @@ public class Drone extends EntityBaseClass implements Serializable {
     @Enumerated(EnumType.STRING)
     private DroneState droneState;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @JsonManagedReference
+    @OneToMany(mappedBy = "drone", fetch = FetchType.LAZY)
     private List<Medication> medications;
 }
