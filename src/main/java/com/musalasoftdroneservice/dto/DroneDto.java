@@ -1,5 +1,6 @@
 package com.musalasoftdroneservice.dto;
 
+import com.musalasoftdroneservice.entity.Medication;
 import com.musalasoftdroneservice.enums.DroneModel;
 import com.musalasoftdroneservice.enums.DroneState;
 import lombok.Builder;
@@ -7,6 +8,7 @@ import lombok.Data;
 
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Builder
 @Data
@@ -31,5 +33,7 @@ public class DroneDto {
 
     @NotNull(message = "Drone State is required")
     private DroneState droneState;
+
+    private List<Medication> medications;
 
 }
