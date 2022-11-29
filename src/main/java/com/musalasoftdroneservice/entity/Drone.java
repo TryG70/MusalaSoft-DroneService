@@ -9,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -40,4 +41,7 @@ public class Drone extends EntityBaseClass implements Serializable {
     @NotNull(message = "Drone State is required")
     @Enumerated(EnumType.STRING)
     private DroneState droneState;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Medication> medications;
 }
