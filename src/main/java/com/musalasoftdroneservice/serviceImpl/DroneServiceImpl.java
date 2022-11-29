@@ -144,6 +144,14 @@ public class DroneServiceImpl implements DroneService {
         return new APIResponse<>("Available Drones found", LocalDateTime.now(), droneDtoList);
     }
 
+    @Override
+    public APIResponse<BigDecimal> getDroneBatteryLevel(String serialNumber) {
+
+        return new APIResponse<>("Battery Level fetched", LocalDateTime.now(),
+                droneRepository.getBatteryLevel(serialNumber).orElseThrow(() ->
+                        new DroneNotFoundException("Drone with serialNumber: " + serialNumber + " was not found")));
+    }
+
     public Drone findDroneBySerialNumber(String serialNumber) {
         return droneRepository.findBySerialNumber(serialNumber).orElseThrow(() ->
                 new DroneNotFoundException("Drone with serialNumber: " + serialNumber + "not found in database"));

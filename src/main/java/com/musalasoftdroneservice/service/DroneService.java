@@ -5,6 +5,7 @@ import com.musalasoftdroneservice.dto.LoadedDroneDetails;
 import com.musalasoftdroneservice.dto.MedicationDto;
 import com.musalasoftdroneservice.reponse.APIResponse;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,5 +18,7 @@ public interface DroneService {
     APIResponse<List<MedicationDto>> getDroneMedicationItems(String serialNumber, LocalDateTime date);
 
     APIResponse<List<DroneDto>> getAvailableDrones();
+
+    APIResponse<BigDecimal> getDroneBatteryLevel(String serialNumber);
 
 }
