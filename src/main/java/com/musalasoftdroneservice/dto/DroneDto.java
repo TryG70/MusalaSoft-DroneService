@@ -2,10 +2,14 @@ package com.musalasoftdroneservice.dto;
 
 import com.musalasoftdroneservice.enums.DroneModel;
 import com.musalasoftdroneservice.enums.DroneState;
+import lombok.Builder;
+import lombok.Data;
 
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
 
+@Builder
+@Data
 public class DroneDto {
 
     @NotNull(message = "Serial Number is required")
