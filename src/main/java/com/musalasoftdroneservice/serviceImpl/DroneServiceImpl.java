@@ -2,10 +2,13 @@ package com.musalasoftdroneservice.serviceImpl;
 
 import com.musalasoftdroneservice.dto.DroneDto;
 import com.musalasoftdroneservice.dto.LoadedDroneDetails;
+import com.musalasoftdroneservice.dto.MedicationDto;
 import com.musalasoftdroneservice.entity.Drone;
 import com.musalasoftdroneservice.entity.Medication;
 import com.musalasoftdroneservice.enums.DroneState;
 import com.musalasoftdroneservice.exception.*;
+import com.musalasoftdroneservice.mapper.DroneMapper;
+import com.musalasoftdroneservice.mapper.MedicationMapper;
 import com.musalasoftdroneservice.reponse.APIResponse;
 import com.musalasoftdroneservice.repository.DroneRepository;
 import com.musalasoftdroneservice.repository.MedicationRepository;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,10 +30,16 @@ public class DroneServiceImpl implements DroneService {
 
     private final MedicationRepository medicationRepository;
 
+    private final MedicationMapper medicationMapper;
+
+    private final DroneMapper droneMapper;
+
     @Autowired
-    public DroneServiceImpl(DroneRepository droneRepository, MedicationRepository medicationRepository) {
+    public DroneServiceImpl(DroneRepository droneRepository, MedicationRepository medicationRepository, MedicationMapper medicationMapper, DroneMapper droneMapper) {
         this.droneRepository = droneRepository;
         this.medicationRepository = medicationRepository;
+        this.medicationMapper = medicationMapper;
+        this.droneMapper = droneMapper;
     }
 
     @Override
@@ -100,11 +110,38 @@ public class DroneServiceImpl implements DroneService {
     }
 
     @Override
-    public APIResponse<List<Medication>> getDroneMedicationItems(String serialNumber, LocalDateTime date) {
+    public APIResponse<List<MedicationDto>> getDroneMedicationItems(String serialNumber, LocalDateTime date) {
 
         Drone drone = findDroneBySerialNumber(serialNumber);
 
-        return new APIResponse<>("medication items found", LocalDateTime.now(), medicationRepository.findAllByDrone_IdAndUpdatedAt(drone.getId(), date));
+
+        List<MedicationDto> medicationDtoList = new ArrayList<>();
+        List<Medication> medicationList = medicationRepository.findAllByDrone_IdAndUpdatedAt(drone.getId(), date);
+
+
+        medicationList.forEach(medication -> {
+            MedicationDto medicationDto = medicationMapper.medicationToMedicationDtoMapper(medication);
+            medicationDtoList.add(medicationDto);
+
+        });
+
+        return new APIResponse<>("Medication items found", LocalDateTime.now(), medicationDtoList);
+    }
+
+    @Override
+    public APIResponse<List<DroneDto>> getAvailableDrones() {
+
+        List<DroneDto> droneDtoList = new ArrayList<>();
+
+        List<Drone> droneList = droneRepository.findAllByDroneStateAndBatteryCapacityGreaterThan(DroneState.IDLE, BigDecimal.valueOf(0.25))
+                .orElseThrow(() -> new NoDronesAvailableException("No available drones at the moment"));
+
+        droneList.forEach(drone -> {
+            DroneDto droneDto = droneMapper.droneToDroneDtoMapper(drone);
+            droneDtoList.add(droneDto);
+        });
+
+        return new APIResponse<>("Available Drones found", LocalDateTime.now(), droneDtoList);
     }
 
     public Drone findDroneBySerialNumber(String serialNumber) {

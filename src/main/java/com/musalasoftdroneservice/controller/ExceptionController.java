@@ -51,5 +51,11 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(exceptionResponse, PRECONDITION_FAILED);
     }
 
+    @ExceptionHandler(NoDronesAvailableException.class)
+    public ResponseEntity<Object> orderNotFound(NoDronesAvailableException exception) {
+
+        ExceptionResponse exceptionResponse = new ExceptionResponse(exception.getMessage(), NOT_FOUND);
+        return new ResponseEntity<>(exceptionResponse, NOT_FOUND);
+    }
 
 }
