@@ -27,6 +27,7 @@ public class Drone extends EntityBaseClass implements Serializable {
 
     @Pattern(regexp = "(Lightweight|Middleweight|Cruiserweight|Heavyweight)", message = "Invalid model")
     @NotNull(message = "Drone Model is required")
+    @Enumerated(EnumType.STRING)
     private DroneModel model;
 
     @DecimalMax(value = "500", message = "Weight limit is 500gr")
