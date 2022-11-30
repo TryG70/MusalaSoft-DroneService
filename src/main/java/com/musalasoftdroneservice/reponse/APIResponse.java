@@ -1,11 +1,13 @@
 package com.musalasoftdroneservice.reponse;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
+@Builder
 @Data
 public class APIResponse<T> {
 
