@@ -14,14 +14,14 @@ import com.musalasoftdroneservice.repository.DroneRepository;
 import com.musalasoftdroneservice.repository.MedicationRepository;
 import com.musalasoftdroneservice.service.DroneService;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class DroneServiceImpl implements DroneService {
@@ -152,6 +152,25 @@ public class DroneServiceImpl implements DroneService {
                         new DroneNotFoundException("Drone with serialNumber: " + serialNumber + " was not found")));
     }
 
+    @Override
+    public APIResponse<?> periodicBatteryHealthCheck(List<Drone> drones) {
+
+        Logger logger = LoggerFactory.getLogger(DroneServiceImpl.class);
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                drones.forEach(drone ->  logger
+                        .info("Battery Level for Drone with serialNumber: " + drone.getSerialNumber() + " is " + drone.getBatteryCapacity()));
+            }
+        } ,1000, 500000);
+
+        return APIResponse.builder()
+                .message("Drone battery health checked")
+                .time(LocalDateTime.now())
+                .build();
+    }
+
     public Drone findDroneBySerialNumber(String serialNumber) {
         return droneRepository.findBySerialNumber(serialNumber).orElseThrow(() ->
                 new DroneNotFoundException("Drone with serialNumber: " + serialNumber + "not found in database"));
@@ -161,6 +180,5 @@ public class DroneServiceImpl implements DroneService {
         return medicationRepository.findByCode(code).orElseThrow(() ->
                 new MedicationNotFoundException("Medication with code: " + code + "not found in database"));
     }
-
 
 }
