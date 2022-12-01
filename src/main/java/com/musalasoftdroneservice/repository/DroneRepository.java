@@ -17,6 +17,6 @@ public interface DroneRepository extends JpaRepository<Drone, Long> {
 
     Optional<List<Drone>> findAllByDroneStateAndBatteryCapacityGreaterThan(DroneState droneState, BigDecimal batteryPercentage);
 
-    @Query(value = "(SELECT batteryCapacity FROM drones WHERE serialNumber = ?1)", nativeQuery = true)
+    @Query(value = "SELECT batteryCapacity FROM drones WHERE serialNumber = ?1", nativeQuery = true)
     Optional<BigDecimal> getBatteryLevel(String serialNumber);
 }
