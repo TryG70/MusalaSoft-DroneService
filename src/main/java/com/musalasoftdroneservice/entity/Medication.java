@@ -1,15 +1,11 @@
 package com.musalasoftdroneservice.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import javax.persistence.*;
+
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -20,21 +16,16 @@ import javax.validation.constraints.Pattern;
 @Table(name = "medications")
 public class Medication extends EntityBaseClass{
 
-    @Pattern(regexp = "(^[a-zA-Z0-9-_])$", message = "letters, numbers, hyphen and underscore allowed")
-    @NotNull(message = "Name of medication is required")
+
     private String name;
 
-    @NotNull(message = "Weight of medication is required")
+
     private Double weight;
 
-    @Pattern(regexp = "(^[A-Z0-9_])$", message = "upper case letters, numbers and underscore allowed")
-    @NotNull(message = "Code of medication is required")
+
     private String code;
+
 
     private String image;
 
-    @JsonBackReference
-    @ManyToOne
-    @JoinColumn(name = "drone", referencedColumnName = "id")
-    private Drone drone;
 }
