@@ -1,6 +1,7 @@
 package com.musalasoftdroneservice.repository;
 
 import com.musalasoftdroneservice.entity.Drone;
+import com.musalasoftdroneservice.entity.Medication;
 import com.musalasoftdroneservice.enums.DroneState;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,6 +18,7 @@ public interface DroneRepository extends JpaRepository<Drone, Long> {
 
     Optional<List<Drone>> findAllByDroneStateAndBatteryCapacityGreaterThan(DroneState droneState, BigDecimal batteryPercentage);
 
-    @Query(value = "SELECT batteryCapacity FROM drones WHERE serialNumber = ?1", nativeQuery = true)
+    @Query(value = "SELECT battery_Capacity FROM drones WHERE serial_Number = ?1", nativeQuery = true)
     Optional<BigDecimal> getBatteryLevel(String serialNumber);
+
 }
