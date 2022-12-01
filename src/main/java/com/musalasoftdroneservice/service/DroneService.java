@@ -7,7 +7,6 @@ import com.musalasoftdroneservice.entity.Drone;
 import com.musalasoftdroneservice.reponse.APIResponse;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public interface DroneService {
@@ -16,12 +15,14 @@ public interface DroneService {
 
     APIResponse<LoadedDroneDetails> loadDrone(String serialNumber, String code);
 
-    APIResponse<List<MedicationDto>> getDroneMedicationItems(String serialNumber, LocalDateTime date);
+    APIResponse<List<MedicationDto>> getDroneMedicationItems(String serialNumber);
 
     APIResponse<List<DroneDto>> getAvailableDrones();
 
     APIResponse<BigDecimal> getDroneBatteryLevel(String serialNumber);
 
     APIResponse<?> periodicBatteryHealthCheck(List<Drone> drones);
+
+    APIResponse<?> offloadDrone(String serialNumber);
 
 }
