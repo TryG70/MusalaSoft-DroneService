@@ -39,6 +39,8 @@ public class Drone extends EntityBaseClass implements Serializable {
 
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "drone", fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "drone_id", referencedColumnName = "id")
     private List<Medication> medications;
+
 }
