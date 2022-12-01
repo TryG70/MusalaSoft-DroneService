@@ -73,19 +73,20 @@ public class DroneServiceImpl implements DroneService {
         if(drone.getBatteryCapacity().compareTo(new BigDecimal("0.25")) > 0) {
             Medication medication = findMedicationByCode(code);
 
-            drone.getMedications().add(medication);
 
-            double totalWeight = 0.0;
+            double totalWeight = medication.getWeight();
 
             for(Medication med : drone.getMedications()) {
                 totalWeight += med.getWeight();
             }
+
 
             drone.setDroneState(DroneState.LOADING);
             droneRepository.save(drone);
             if(totalWeight < drone.getWeightLimit()) {
 
                 drone.setDroneState(DroneState.LOADED);
+                drone.getMedications().add(medication);
 
                 droneRepository.save(drone);
 
@@ -110,13 +111,13 @@ public class DroneServiceImpl implements DroneService {
     }
 
     @Override
-    public APIResponse<List<MedicationDto>> getDroneMedicationItems(String serialNumber, LocalDateTime date) {
+    public APIResponse<List<MedicationDto>> getDroneMedicationItems(String serialNumber) {
 
         Drone drone = findDroneBySerialNumber(serialNumber);
 
 
         List<MedicationDto> medicationDtoList = new ArrayList<>();
-        List<Medication> medicationList = medicationRepository.findAllByDrone_IdAndUpdatedAt(drone.getId(), date);
+        List<Medication> medicationList = drone.getMedications();
 
 
         medicationList.forEach(medication -> {
@@ -169,6 +170,22 @@ public class DroneServiceImpl implements DroneService {
                 .message("Drone battery health checked")
                 .time(LocalDateTime.now())
                 .build();
+    }
+
+    @Override
+    public APIResponse<?> offloadDrone(String serialNumber) {
+
+         Drone drone = findDroneBySerialNumber(serialNumber);
+
+         drone.getMedications().removeAll(drone.getMedications());
+         drone.setDroneState(DroneState.IDLE);
+
+         droneRepository.save(drone);
+
+            return APIResponse.builder()
+                    .message("Drone unloaded successfully")
+                    .time(LocalDateTime.now())
+                    .build();
     }
 
     public Drone findDroneBySerialNumber(String serialNumber) {
