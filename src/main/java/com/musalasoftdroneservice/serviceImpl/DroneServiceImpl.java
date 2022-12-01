@@ -13,7 +13,7 @@ import com.musalasoftdroneservice.reponse.APIResponse;
 import com.musalasoftdroneservice.repository.DroneRepository;
 import com.musalasoftdroneservice.repository.MedicationRepository;
 import com.musalasoftdroneservice.service.DroneService;
-import jakarta.transaction.Transactional;
+import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
