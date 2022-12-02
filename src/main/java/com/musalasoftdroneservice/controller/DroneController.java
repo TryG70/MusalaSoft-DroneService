@@ -8,9 +8,12 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import java.util.Objects;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -25,7 +28,11 @@ public class DroneController {
 
     @Operation(summary = "Register a new drone")
     @PostMapping(value = "/register/drone")
-    public ResponseEntity<?> registerDrone(@Valid @RequestBody DroneDto droneDto) {
+    public ResponseEntity<?> registerDrone(@Valid @RequestBody DroneDto droneDto, Errors error) {
+        if(error.hasErrors()){
+            return new ResponseEntity<>(Objects.requireNonNull(error.getFieldError()).getDefaultMessage(), BAD_REQUEST);
+        }
+
         return new ResponseEntity<>(droneService.registerDrone(droneDto), CREATED);
     }
 
