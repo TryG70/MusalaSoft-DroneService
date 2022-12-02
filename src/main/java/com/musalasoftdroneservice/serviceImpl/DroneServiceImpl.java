@@ -5,6 +5,7 @@ import com.musalasoftdroneservice.dto.LoadedDroneDetails;
 import com.musalasoftdroneservice.dto.MedicationDto;
 import com.musalasoftdroneservice.entity.Drone;
 import com.musalasoftdroneservice.entity.Medication;
+import com.musalasoftdroneservice.enums.DroneModel;
 import com.musalasoftdroneservice.enums.DroneState;
 import com.musalasoftdroneservice.exception.*;
 import com.musalasoftdroneservice.mapper.DroneMapper;
@@ -50,9 +51,9 @@ public class DroneServiceImpl implements DroneService {
         if(droneOptional.isEmpty()) {
             Drone drone = Drone.builder()
                     .serialNumber(droneDto.getSerialNumber())
-                    .model(droneDto.getModel())
+                    .model(DroneModel.valueOf(droneDto.getModel()))
                     .weightLimit(droneDto.getWeightLimit())
-                    .batteryCapacity(droneDto.getBatteryCapacity())
+                    .batteryCapacity((droneDto.getBatteryCapacity()))
                     .droneState(DroneState.IDLE)
                     .build();
 
@@ -70,7 +71,7 @@ public class DroneServiceImpl implements DroneService {
 
         Drone drone = findDroneBySerialNumber(serialNumber);
 
-        if(drone.getBatteryCapacity().compareTo(new BigDecimal("0.25")) > 0) {
+        if(drone.getBatteryCapacity() > 25) {
             Medication medication = findMedicationByCode(code);
 
 
