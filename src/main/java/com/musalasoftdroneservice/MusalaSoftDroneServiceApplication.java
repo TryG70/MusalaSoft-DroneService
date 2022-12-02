@@ -30,10 +30,10 @@ public class MusalaSoftDroneServiceApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        droneRepository.save(Drone.builder().serialNumber("HV5920434380").model(DroneModel.Lightweight).weightLimit(385.7).batteryCapacity(new BigDecimal(75)).droneState(DroneState.IDLE).build());
-        droneRepository.save(Drone.builder().serialNumber("MQ5920434485").model(DroneModel.Middleweight).weightLimit(205.2).batteryCapacity(new BigDecimal(75)).droneState(DroneState.LOADED).build());
-        droneRepository.save(Drone.builder().serialNumber("LN5920436382").model(DroneModel.Cruiserweight).weightLimit(400.0).batteryCapacity(new BigDecimal(75)).droneState(DroneState.IDLE).build());
-        droneRepository.save(Drone.builder().serialNumber("ER59206734383").model(DroneModel.Heavyweight).weightLimit(189.9).batteryCapacity(new BigDecimal(75)).droneState(DroneState.IDLE).build());
+        droneRepository.save(Drone.builder().serialNumber("HV5920434380").model(DroneModel.Lightweight).weightLimit(385.7).batteryCapacity(75).droneState(DroneState.IDLE).build());
+        droneRepository.save(Drone.builder().serialNumber("MQ5920434485").model(DroneModel.Middleweight).weightLimit(205.2).batteryCapacity(45).droneState(DroneState.LOADED).build());
+        droneRepository.save(Drone.builder().serialNumber("LN5920436382").model(DroneModel.Cruiserweight).weightLimit(400.0).batteryCapacity(98).droneState(DroneState.IDLE).build());
+        droneRepository.save(Drone.builder().serialNumber("ER59206734383").model(DroneModel.Heavyweight).weightLimit(189.9).batteryCapacity(69).droneState(DroneState.IDLE).build());
 
         logger.info("Drones registered successfully");
 
