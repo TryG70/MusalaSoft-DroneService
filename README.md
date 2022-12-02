@@ -33,7 +33,7 @@ You need the following to build and run the application:
 ### step 1 - clone project with Terminal from [here](https://gitlab.com/TryG70/MusalaSoft-DroneService)
 
 ```
-git clone git@gitlab.com:TryG70/MusalaSoft-DroneService.git
+git clone git@github.com:TryG70/MusalaSoft-DroneService.git
 ```
 
 ### step 2 - move into the project directory
