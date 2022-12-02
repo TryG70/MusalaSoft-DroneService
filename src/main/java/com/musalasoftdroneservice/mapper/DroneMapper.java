@@ -11,7 +11,7 @@ public class DroneMapper {
 
         return DroneDto.builder()
                 .serialNumber(drone.getSerialNumber())
-                .model(drone.getModel())
+                .model(String.valueOf(drone.getModel()))
                 .weightLimit(drone.getWeightLimit())
                 .batteryCapacity(drone.getBatteryCapacity())
                 .droneState(drone.getDroneState())
