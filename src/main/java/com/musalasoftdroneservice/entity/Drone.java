@@ -8,7 +8,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -31,7 +30,7 @@ public class Drone extends EntityBaseClass implements Serializable {
     private Double weightLimit;
 
 
-    private BigDecimal batteryCapacity;
+    private int batteryCapacity;
 
 
     @Enumerated(EnumType.STRING)
