@@ -14,42 +14,42 @@ import static org.springframework.http.HttpStatus.*;
 public class ExceptionController extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(DroneAlreadyRegisteredException.class)
-    public ResponseEntity<Object> orderNotFound(DroneAlreadyRegisteredException exception) {
+    public ResponseEntity<Object> droneAlreadyRegistered(DroneAlreadyRegisteredException exception) {
 
         ExceptionResponse exceptionResponse = new ExceptionResponse(exception.getMessage(), FORBIDDEN);
         return new ResponseEntity<>(exceptionResponse, FORBIDDEN);
     }
 
     @ExceptionHandler(DroneNotFoundException.class)
-    public ResponseEntity<Object> orderNotFound(DroneNotFoundException exception) {
+    public ResponseEntity<Object> droneNotFound(DroneNotFoundException exception) {
 
         ExceptionResponse exceptionResponse = new ExceptionResponse(exception.getMessage(), NOT_FOUND);
         return new ResponseEntity<>(exceptionResponse, NOT_FOUND);
     }
 
     @ExceptionHandler(DroneOverloadedException.class)
-    public ResponseEntity<Object> orderNotFound(DroneOverloadedException exception) {
+    public ResponseEntity<Object> droneOverloaded(DroneOverloadedException exception) {
 
         ExceptionResponse exceptionResponse = new ExceptionResponse(exception.getMessage(), NOT_ACCEPTABLE);
         return new ResponseEntity<>(exceptionResponse, NOT_ACCEPTABLE);
     }
 
     @ExceptionHandler(MedicationNotFoundException.class)
-    public ResponseEntity<Object> orderNotFound(MedicationNotFoundException exception) {
+    public ResponseEntity<Object> medicationNotFound(MedicationNotFoundException exception) {
 
         ExceptionResponse exceptionResponse = new ExceptionResponse(exception.getMessage(), NOT_FOUND);
         return new ResponseEntity<>(exceptionResponse, NOT_FOUND);
     }
 
     @ExceptionHandler(DroneLowBatteryException.class)
-    public ResponseEntity<Object> orderNotFound(DroneLowBatteryException exception) {
+    public ResponseEntity<Object> droneLowBattery(DroneLowBatteryException exception) {
 
         ExceptionResponse exceptionResponse = new ExceptionResponse(exception.getMessage(), PRECONDITION_FAILED);
         return new ResponseEntity<>(exceptionResponse, PRECONDITION_FAILED);
     }
 
     @ExceptionHandler(NoDronesAvailableException.class)
-    public ResponseEntity<Object> orderNotFound(NoDronesAvailableException exception) {
+    public ResponseEntity<Object> noDronesAvailable(NoDronesAvailableException exception) {
 
         ExceptionResponse exceptionResponse = new ExceptionResponse(exception.getMessage(), NOT_FOUND);
         return new ResponseEntity<>(exceptionResponse, NOT_FOUND);
