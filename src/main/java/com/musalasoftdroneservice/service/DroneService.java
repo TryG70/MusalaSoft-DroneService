@@ -13,7 +13,7 @@ public interface DroneService {
 
     APIResponse<DroneDto> registerDrone(DroneDto droneDto);
 
-    APIResponse<LoadedDroneDetails> loadDrone(String serialNumber, String code);
+    APIResponse<LoadedDroneDetails> loadDrone(String droneSerialNumber, String medicationCode);
 
     APIResponse<List<MedicationDto>> getDroneMedicationItems(String serialNumber);
 
@@ -21,7 +21,7 @@ public interface DroneService {
 
     APIResponse<BigDecimal> getDroneBatteryLevel(String serialNumber);
 
-    APIResponse<?> periodicBatteryHealthCheck(List<Drone> drones);
+    void periodicBatteryHealthCheck();
 
     APIResponse<?> offloadDrone(String serialNumber);
 

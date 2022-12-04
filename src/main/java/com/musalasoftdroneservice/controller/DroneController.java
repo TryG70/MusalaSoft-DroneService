@@ -28,7 +28,7 @@ public class DroneController {
 
     @Operation(summary = "Register a new drone")
     @PostMapping(value = "/register/drone")
-    public ResponseEntity<?> registerDrone(@Valid @RequestBody DroneDto droneDto, Errors error) {
+    public ResponseEntity<?> register(@Valid @RequestBody DroneDto droneDto, Errors error) {
         if(error.hasErrors()){
             return new ResponseEntity<>(Objects.requireNonNull(error.getFieldError()).getDefaultMessage(), BAD_REQUEST);
         }
@@ -37,9 +37,9 @@ public class DroneController {
     }
 
     @Operation(summary = "Drone loading")
-    @PostMapping(value = "/load/drone/{serialNumber}/{code}")
-    public ResponseEntity<?> loadDrone(@PathVariable(value = "serialNumber") String serialNumber, @PathVariable(value = "code") String code) {
-        return new ResponseEntity<>(droneService.loadDrone(serialNumber, code), OK);
+    @PostMapping(value = "/load/{serialNumber}/{code}")
+    public ResponseEntity<?> loadDrone(@PathVariable(value = "serialNumber") String droneSerialNumber, @PathVariable(value = "code") String medicationCode) {
+        return new ResponseEntity<>(droneService.loadDrone(droneSerialNumber, medicationCode), OK);
     }
 
     @Operation(summary = "Get drone loaded medication items")

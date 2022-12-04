@@ -12,6 +12,6 @@ import java.time.LocalDateTime;
 public class APIResponse<T> {
 
     private String message;
-    private LocalDateTime time;
+    private LocalDateTime time = LocalDateTime.now();
     private T dto;
 }

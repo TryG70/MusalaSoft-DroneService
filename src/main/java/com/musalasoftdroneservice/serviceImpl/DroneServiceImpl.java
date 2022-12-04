@@ -18,10 +18,10 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -58,8 +58,12 @@ public class DroneServiceImpl implements DroneService {
                     .build();
 
             droneRepository.save(drone);
+            drone.setDroneState(DroneState.IDLE);
 
-            return new APIResponse<>("Drone registration successful", LocalDateTime.now(), droneDto);
+            return APIResponse.<DroneDto>builder()
+                    .message("Drone registration successful")
+                    .dto(droneDto)
+                    .build();
         } else {
             throw new DroneAlreadyRegisteredException("Drone with serialNumber: " + droneDto.getSerialNumber() + " already registered");
         }
@@ -67,12 +71,12 @@ public class DroneServiceImpl implements DroneService {
 
     @Override
     @Transactional
-    public APIResponse<LoadedDroneDetails> loadDrone(String serialNumber, String code) {
+    public APIResponse<LoadedDroneDetails> loadDrone(String droneSerialNumber, String medicationCode) {
 
-        Drone drone = findDroneBySerialNumber(serialNumber);
+        Drone drone = findDroneBySerialNumber(droneSerialNumber);
 
         if(drone.getBatteryCapacity() > 25) {
-            Medication medication = findMedicationByCode(code);
+            Medication medication = findMedicationByCode(medicationCode);
 
 
             double totalWeight = medication.getWeight();
@@ -96,7 +100,10 @@ public class DroneServiceImpl implements DroneService {
                         .medicationList(drone.getMedications())
                         .build();
 
-                return new APIResponse<>("drone loaded successfully", LocalDateTime.now(), loadedDroneDetails);
+                return APIResponse.<LoadedDroneDetails>builder()
+                        .message("drone loaded successfully")
+                        .dto(loadedDroneDetails)
+                        .build();
 
             } else {
 
@@ -116,61 +123,51 @@ public class DroneServiceImpl implements DroneService {
 
         Drone drone = findDroneBySerialNumber(serialNumber);
 
-
-        List<MedicationDto> medicationDtoList = new ArrayList<>();
         List<Medication> medicationList = drone.getMedications();
 
+        List<MedicationDto> medicationDtoList = medicationList.stream().map(medicationMapper::medicationToMedicationDtoMapper).toList();
 
-        medicationList.forEach(medication -> {
-            MedicationDto medicationDto = medicationMapper.medicationToMedicationDtoMapper(medication);
-            medicationDtoList.add(medicationDto);
-
-        });
-
-        return new APIResponse<>("Medication items found", LocalDateTime.now(), medicationDtoList);
+        return APIResponse.<List<MedicationDto>>builder()
+                .message("Medication items found")
+                .dto(medicationDtoList)
+                .build();
     }
 
     @Override
     public APIResponse<List<DroneDto>> getAvailableDrones() {
 
-        List<DroneDto> droneDtoList = new ArrayList<>();
-
-        List<Drone> droneList = droneRepository.findAllByDroneStateAndBatteryCapacityGreaterThan(DroneState.IDLE, BigDecimal.valueOf(0.25))
+        List<Drone> droneList = droneRepository.findAllByDroneStateAndBatteryCapacityGreaterThan(DroneState.IDLE, 25)
                 .orElseThrow(() -> new NoDronesAvailableException("No available drones at the moment"));
 
-        droneList.forEach(drone -> {
-            DroneDto droneDto = droneMapper.droneToDroneDtoMapper(drone);
-            droneDtoList.add(droneDto);
-        });
 
-        return new APIResponse<>("Available Drones found", LocalDateTime.now(), droneDtoList);
+        List<DroneDto> droneDtoList = droneList.stream().map(droneMapper::droneToDroneDtoMapper).toList();
+
+        return APIResponse.<List<DroneDto>>builder()
+                .message("Available Drones found")
+                .dto(droneDtoList)
+                .build();
     }
 
     @Override
     public APIResponse<BigDecimal> getDroneBatteryLevel(String serialNumber) {
 
-        return new APIResponse<>("Battery Level fetched", LocalDateTime.now(),
-                droneRepository.getBatteryLevel(serialNumber).orElseThrow(() ->
-                        new DroneNotFoundException("Drone with serialNumber: " + serialNumber + " was not found")));
+        return APIResponse.<BigDecimal>builder()
+                .message("Battery Level fetched")
+                .dto(droneRepository.getBatteryLevel(serialNumber).orElseThrow(() ->
+                        new DroneNotFoundException("Drone with serialNumber: " + serialNumber + " was not found")))
+                .build();
     }
 
     @Override
-    public APIResponse<?> periodicBatteryHealthCheck(List<Drone> drones) {
+    @Scheduled(fixedDelay = 3000, initialDelay = 5000)
+    public void periodicBatteryHealthCheck() {
 
         Logger logger = LoggerFactory.getLogger(DroneServiceImpl.class);
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                drones.forEach(drone ->  logger
-                        .info("Battery Level for Drone with serialNumber: " + drone.getSerialNumber() + " is " + drone.getBatteryCapacity()));
-            }
-        } ,1000, 500000);
 
-        return APIResponse.builder()
-                .message("Drone battery health checked")
-                .time(LocalDateTime.now())
-                .build();
+        List<Drone> drones = droneRepository.findAll();
+
+        drones.forEach(drone ->  logger
+                .info("Battery Level for Drone with serialNumber: " + drone.getSerialNumber() + " is " + drone.getBatteryCapacity()));
     }
 
     @Override
@@ -185,7 +182,6 @@ public class DroneServiceImpl implements DroneService {
 
             return APIResponse.builder()
                     .message("Drone unloaded successfully")
-                    .time(LocalDateTime.now())
                     .build();
     }
 

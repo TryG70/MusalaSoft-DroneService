@@ -12,7 +12,7 @@ import javax.validation.constraints.Pattern;
 public class MedicationDto {
 
 
-    @Pattern(regexp = "(^[a-zA-Z0-9-_])$", message = "letters, numbers, hyphen and underscore allowed")
+    @Pattern(regexp = "[\\w-]+$", message = "letters, numbers, hyphen and underscore allowed")
     @NotNull(message = "Name of medication is required")
     private String name;
 
@@ -21,7 +21,7 @@ public class MedicationDto {
     private Double weight;
 
 
-    @Pattern(regexp = "(^[A-Z0-9_])$", message = "upper case letters, numbers and underscore allowed")
+    @Pattern(regexp = "[A-Z0-9_]+$", message = "upper case letters, numbers and underscore allowed")
     @NotNull(message = "Code of medication is required")
     private String code;
 
