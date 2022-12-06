@@ -57,12 +57,12 @@ public class DroneServiceImpl implements DroneService {
                     .droneState(DroneState.IDLE)
                     .build();
 
-            droneRepository.save(drone);
-            drone.setDroneState(DroneState.IDLE);
+            Drone newDrone = droneRepository.save(drone);
+            DroneDto newDroneDto = droneMapper.droneToDroneDtoMapper(newDrone);
 
             return APIResponse.<DroneDto>builder()
                     .message("Drone registration successful")
-                    .dto(droneDto)
+                    .dto(newDroneDto)
                     .build();
         } else {
             throw new DroneAlreadyRegisteredException("Drone with serialNumber: " + droneDto.getSerialNumber() + " already registered");
@@ -149,9 +149,9 @@ public class DroneServiceImpl implements DroneService {
     }
 
     @Override
-    public APIResponse<BigDecimal> getDroneBatteryLevel(String serialNumber) {
+    public APIResponse<Integer> getDroneBatteryLevel(String serialNumber) {
 
-        return APIResponse.<BigDecimal>builder()
+        return APIResponse.<Integer>builder()
                 .message("Battery Level fetched")
                 .dto(droneRepository.getBatteryLevel(serialNumber).orElseThrow(() ->
                         new DroneNotFoundException("Drone with serialNumber: " + serialNumber + " was not found")))

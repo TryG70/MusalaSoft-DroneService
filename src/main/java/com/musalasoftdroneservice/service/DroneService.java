@@ -19,7 +19,7 @@ public interface DroneService {
 
     APIResponse<List<DroneDto>> getAvailableDrones();
 
-    APIResponse<BigDecimal> getDroneBatteryLevel(String serialNumber);
+    APIResponse<Integer> getDroneBatteryLevel(String serialNumber);
 
     void periodicBatteryHealthCheck();
 
