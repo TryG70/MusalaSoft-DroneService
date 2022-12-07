@@ -7,12 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Objects;
 
 @Data
 @Builder
@@ -44,17 +42,4 @@ public class Drone extends EntityBaseClass implements Serializable {
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "drone_id", referencedColumnName = "id")
     private List<Medication> medications;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Drone drone = (Drone) o;
-        return getId() != 0 && Objects.equals(getId(), drone.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }
