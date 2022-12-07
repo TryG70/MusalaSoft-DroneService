@@ -59,7 +59,7 @@ OR
 ```
 
 
-## PostMan Collection for Integration Tests
+## PostMan Collection for Integration Tests.
 - Musala-Soft Drone-Service [here](https://api.postman.com/collections/22955162-8cf57c1f-0c62-4ec0-b487-09eab8282cd6?access_key=PMAT-01GK9NZEKC0T5R886YZ4WMHQFG)
 
 
