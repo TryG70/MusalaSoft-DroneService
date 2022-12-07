@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -62,6 +63,7 @@ public class DroneServiceImpl implements DroneService {
 
             return APIResponse.<DroneDto>builder()
                     .message("Drone registration successful")
+                    .time(LocalDateTime.now())
                     .dto(newDroneDto)
                     .build();
         } else {
@@ -102,6 +104,7 @@ public class DroneServiceImpl implements DroneService {
 
                 return APIResponse.<LoadedDroneDetails>builder()
                         .message("drone loaded successfully")
+                        .time(LocalDateTime.now())
                         .dto(loadedDroneDetails)
                         .build();
 
@@ -129,6 +132,7 @@ public class DroneServiceImpl implements DroneService {
 
         return APIResponse.<List<MedicationDto>>builder()
                 .message("Medication items found")
+                .time(LocalDateTime.now())
                 .dto(medicationDtoList)
                 .build();
     }
@@ -144,6 +148,7 @@ public class DroneServiceImpl implements DroneService {
 
         return APIResponse.<List<DroneDto>>builder()
                 .message("Available Drones found")
+                .time(LocalDateTime.now())
                 .dto(droneDtoList)
                 .build();
     }
@@ -153,6 +158,7 @@ public class DroneServiceImpl implements DroneService {
 
         return APIResponse.<Integer>builder()
                 .message("Battery Level fetched")
+                .time(LocalDateTime.now())
                 .dto(droneRepository.getBatteryLevel(serialNumber).orElseThrow(() ->
                         new DroneNotFoundException("Drone with serialNumber: " + serialNumber + " was not found")))
                 .build();
@@ -182,6 +188,8 @@ public class DroneServiceImpl implements DroneService {
 
             return APIResponse.builder()
                     .message("Drone unloaded successfully")
+                    .time(LocalDateTime.now())
+                    .dto(serialNumber)
                     .build();
     }
 
