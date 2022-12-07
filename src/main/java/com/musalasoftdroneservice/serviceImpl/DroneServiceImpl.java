@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 @Service
@@ -55,6 +54,7 @@ public class DroneServiceImpl implements DroneService {
                     .weightLimit(droneDto.getWeightLimit())
                     .batteryCapacity((droneDto.getBatteryCapacity()))
                     .droneState(DroneState.IDLE)
+                    .medications(new ArrayList<>())
                     .build();
 
             Drone newDrone = droneRepository.save(drone);
@@ -187,7 +187,7 @@ public class DroneServiceImpl implements DroneService {
 
     public Drone findDroneBySerialNumber(String serialNumber) {
         return droneRepository.findBySerialNumber(serialNumber).orElseThrow(() ->
-                new DroneNotFoundException("Drone with serialNumber: " + serialNumber + "not found in database"));
+                new DroneNotFoundException("Drone with serialNumber: " + serialNumber + " not found in database"));
     }
 
     public Medication findMedicationByCode(String code) {
